@@ -4,25 +4,18 @@ declare(strict_types=1);
 
 namespace Luzrain\PhpRunnerBundle\DependencyInjection;
 
-use Luzrain\PhpRunnerBundle\Attribute\AsProcess;
-use Luzrain\PhpRunnerBundle\Attribute\AsTask;
-use Luzrain\PhpRunnerBundle\Command\ReloadCommand;
-use Luzrain\PhpRunnerBundle\Command\StartCommand;
-use Luzrain\PhpRunnerBundle\Command\StatusCommand;
-use Luzrain\PhpRunnerBundle\Command\StopCommand;
 use Luzrain\PhpRunnerBundle\ConfigLoader;
-use Luzrain\PhpRunnerBundle\KernelRunner;
-use Psr\Http\Message\ResponseFactoryInterface;
-use Psr\Http\Message\ServerRequestFactoryInterface;
-use Psr\Http\Message\StreamFactoryInterface;
-use Psr\Http\Message\UploadedFileFactoryInterface;
-use Psr\Log\LoggerInterface;
-use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
-use Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory;
-use Symfony\Component\DependencyInjection\ChildDefinition;
+use Luzrain\PhpRunnerBundle\Event\HttpServerStartEvent;
+use Luzrain\PhpRunnerBundle\Http\HttpRequestHandler;
+use Luzrain\PhpRunnerBundle\ReloadStrategy\OnEachRequest;
+use Luzrain\PhpRunnerBundle\ReloadStrategy\OnException;
+use Luzrain\PhpRunnerBundle\ReloadStrategy\OnRequestsLimit;
+use Luzrain\PhpRunnerBundle\ReloadStrategy\OnMemoryLimit;
+use Luzrain\PhpRunnerBundle\ReloadStrategy\OnTTLLimit;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 final class PhpRunnerExtension extends Extension
@@ -43,78 +36,91 @@ final class PhpRunnerExtension extends Extension
             ])
         ;
 
-//        $container
-//            ->register('workerman.workerman_http_message_factory', WorkermanHttpMessageFactory::class)
-//            ->setArguments([
-//                new Reference(ServerRequestFactoryInterface::class),
-//                new Reference(StreamFactoryInterface::class),
-//                new Reference(UploadedFileFactoryInterface::class),
-//            ])
-//        ;
-//
-//        $container
-//            ->register('workerman.task_error_listener', TaskErrorListener::class)
-//            ->addTag('kernel.event_subscriber')
-//            ->addTag('monolog.logger', ['channel' => 'task'])
-//            ->setArguments([
-//                new Reference('logger'),
-//            ])
-//        ;
-//
-//        $container
-//            ->register('workerman.process_error_listener', ProcessErrorListener::class)
-//            ->addTag('kernel.event_subscriber')
-//            ->addTag('monolog.logger', ['channel' => 'process'])
-//            ->setArguments([
-//                new Reference('logger'),
-//            ])
-//        ;
-//
-//        $container
-//            ->register('workerman.kernel_runner', KernelRunner::class)
-//            ->setArguments([new Reference(KernelInterface::class)])
-//        ;
-//
+        $container
+            ->register('phprunner.http_request_handler', HttpRequestHandler::class)
+            ->setArguments([new Reference(KernelInterface::class)])
+            ->setPublic(true)
+        ;
+
+        $container
+            ->setAlias('phprunner.logger', 'logger')
+            ->setPublic(true);
+
+        if ($config['reload_strategy']['on_exception']['active']) {
+            $container
+                ->register('phprunner.on_exception_reload_strategy', OnException::class)
+                ->addTag('kernel.event_listener', [
+                    'event' => HttpServerStartEvent::class,
+                    'method' => 'onServerStart',
+                ])
+                ->addTag('kernel.event_listener', [
+                    'event' => ExceptionEvent::class,
+                    'priority' => -100,
+                    'method' => 'onException',
+                ])
+                ->setArguments([
+                    $config['reload_strategy']['on_exception']['allowed_exceptions'],
+                ])
+            ;
+        }
+
+        if ($config['reload_strategy']['on_each_request']['active']) {
+            $container
+                ->register('phprunner.on_each_request_reload_strategy', OnEachRequest::class)
+                ->addTag('kernel.event_listener', [
+                    'event' => HttpServerStartEvent::class,
+                    'method' => 'onServerStart',
+                ])
+            ;
+        }
+
+        if ($config['reload_strategy']['on_ttl_limit']['active']) {
+            $container
+                ->register('phprunner.on_ttl_limit_reload_strategy', OnTTLLimit::class)
+                ->addTag('kernel.event_listener', [
+                    'event' => HttpServerStartEvent::class,
+                    'method' => 'onServerStart',
+                ])
+                ->setArguments([
+                    $config['reload_strategy']['on_ttl_limit']['ttl'],
+                ])
+            ;
+        }
+
+        if ($config['reload_strategy']['on_requests_limit']['active']) {
+            $container
+                ->register('phprunner.on_requests_limit_reload_strategy', OnRequestsLimit::class)
+                ->addTag('kernel.event_listener', [
+                    'event' => HttpServerStartEvent::class,
+                    'method' => 'onServerStart',
+                ])
+                ->setArguments([
+                    $config['reload_strategy']['on_requests_limit']['requests'],
+                    $config['reload_strategy']['on_requests_limit']['dispersion'],
+                ])
+            ;
+        }
+
+        if ($config['reload_strategy']['on_memory_limit']['active']) {
+            $container
+                ->register('phprunner.on_on_memory_limit_reload_strategy', OnMemoryLimit::class)
+                ->addTag('kernel.event_listener', [
+                    'event' => HttpServerStartEvent::class,
+                    'method' => 'onServerStart',
+                ])
+                ->setArguments([
+                    $config['reload_strategy']['on_memory_limit']['memory'],
+                ])
+            ;
+        }
+
 //        $container->registerAttributeForAutoconfiguration(AsProcess::class, $this->processConfig(...));
 //        $container->registerAttributeForAutoconfiguration(AsTask::class, $this->taskConfig(...));
-//
-//        if ($config['reload_strategy']['always']['active']) {
-//            $container
-//                ->register('workerman.always_reboot_strategy', AlwaysRebootStrategy::class)
-//                ->addTag('workerman.reboot_strategy')
-//            ;
-//        }
-//
-//        if ($config['reload_strategy']['max_requests']['active']) {
-//            $container
-//                ->register('workerman.max_requests_reboot_strategy', MaxJobsRebootStrategy::class)
-//                ->addTag('workerman.reboot_strategy')
-//                ->setArguments([
-//                    $config['reload_strategy']['max_requests']['requests'],
-//                    $config['reload_strategy']['max_requests']['dispersion'],
-//                ])
-//            ;
-//        }
-//
-//        if ($config['reload_strategy']['exception']['active']) {
-//            $container
-//                ->register('workerman.exception_reboot_strategy', ExceptionRebootStrategy::class)
-//                ->addTag('workerman.reboot_strategy')
-//                ->addTag('kernel.event_listener', [
-//                    'event' => 'kernel.exception',
-//                    'priority' => -100,
-//                    'method' => 'onException',
-//                ])
-//                ->setArguments([
-//                    $config['reload_strategy']['exception']['allowed_exceptions'],
-//                ])
-//            ;
-//        }
     }
 
 //    private function processConfig(ChildDefinition $definition, AsProcess $attribute): void
 //    {
-//        $definition->addTag('workerman.process', [
+//        $definition->addTag('phprunner.process', [
 //            'name' => $attribute->name,
 //            'processes' => $attribute->processes,
 //            'method' => $attribute->method,
@@ -123,7 +129,7 @@ final class PhpRunnerExtension extends Extension
 //
 //    private function taskConfig(ChildDefinition $definition, AsTask $attribute): void
 //    {
-//        $definition->addTag('workerman.task', [
+//        $definition->addTag('phprunner.task', [
 //            'name' => $attribute->name,
 //            'schedule' => $attribute->schedule,
 //            'method' => $attribute->method,

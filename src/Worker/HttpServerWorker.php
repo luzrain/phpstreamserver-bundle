@@ -8,10 +8,12 @@ use Luzrain\PhpRunner\Server\Connection\ConnectionInterface;
 use Luzrain\PhpRunner\Server\Protocols\Http;
 use Luzrain\PhpRunner\Server\Server;
 use Luzrain\PhpRunner\WorkerProcess;
+use Luzrain\PhpRunnerBundle\Event\HttpServerStartEvent;
 use Luzrain\PhpRunnerBundle\KernelFactory;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\ErrorHandler\ErrorHandler;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 final class HttpServerWorker extends WorkerProcess
 {
@@ -56,6 +58,9 @@ final class HttpServerWorker extends WorkerProcess
         /** @var LoggerInterface $logger */
         $logger = $kernel->getContainer()->get('phprunner.logger');
 
+        /** @var EventDispatcherInterface $eventDispatcher */
+        $eventDispatcher = $kernel->getContainer()->get('event_dispatcher');
+
         if ($logger instanceof \Monolog\Logger) {
             $logger = $logger->withName('phprunner');
         }
@@ -67,7 +72,7 @@ final class HttpServerWorker extends WorkerProcess
         };
 
         $this->setLogger($logger);
-        $this->getEventLoop()->setErrorHandler($errorHandlerClosure);
+        $this->setErrorHandler($errorHandlerClosure);
 
         $this->startServer(new Server(
             listen: $this->listen,
@@ -79,5 +84,7 @@ final class HttpServerWorker extends WorkerProcess
                 $connection->send($httpHandler($data));
             },
         ));
+
+        $eventDispatcher->dispatch(new HttpServerStartEvent($this));
     }
 }

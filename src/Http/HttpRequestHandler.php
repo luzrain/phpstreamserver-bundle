@@ -67,11 +67,8 @@ final readonly class HttpRequestHandler
         $worker = $this->kernel->getContainer()->get('phprunner.worker');
 
         if ($this->kernel instanceof TerminableInterface) {
-            // Double defer to ensure that terminate calls after connection will be close
-            $worker->getEventLoop()->defer(function () use ($worker, $symfonyRequest, $symfonyResponse) {
-                $worker->getEventLoop()->defer(function () use ($symfonyRequest, $symfonyResponse) {
-                    $this->kernel->terminate($symfonyRequest, $symfonyResponse);
-                });
+            $worker->getEventLoop()->defer(function () use ($symfonyRequest, $symfonyResponse): void {
+                $this->kernel->terminate($symfonyRequest, $symfonyResponse);
             });
         }
 
@@ -83,7 +80,7 @@ final readonly class HttpRequestHandler
         $publicDir = $this->kernel->getProjectDir() . '/public';
         $path = \realpath($publicDir . $requestPath);
 
-        if ($path === false || !\str_starts_with($path, $publicDir . '/') || !\file_exists($path) || \is_dir($path)) {
+        if ($path === false || !\file_exists($path) || \is_dir($path) || !\str_starts_with($path, $publicDir . '/')) {
             return null;
         }
 

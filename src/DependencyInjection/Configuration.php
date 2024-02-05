@@ -87,10 +87,7 @@ final class Configuration implements ConfigurationInterface
                                 ->arrayNode('allowed_exceptions')
                                     ->info('List of allowed exceptions that do not trigger a reload')
                                     ->prototype('scalar')->end()
-                                    ->defaultValue([
-                                        'Symfony\Component\HttpKernel\Exception\HttpExceptionInterface',
-                                        'Symfony\Component\Serializer\Exception\ExceptionInterface',
-                                    ])
+                                    ->defaultValue([])
                                     ->end()
                                 ->end()
                             ->end()
