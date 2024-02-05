@@ -8,6 +8,9 @@ use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
 
+/**
+ * @psalm-suppress PropertyNotSetInConstructor
+ */
 final class ConfigLoader implements CacheWarmerInterface
 {
     private array $config;
@@ -40,7 +43,7 @@ final class ConfigLoader implements CacheWarmerInterface
             $kernelFactory->createKernel()->boot();
             exit;
         } else {
-            pcntl_wait($status);
+            \pcntl_wait($status);
             unset($status);
         }
     }
@@ -50,6 +53,10 @@ final class ConfigLoader implements CacheWarmerInterface
         return $this->cache->isFresh();
     }
 
+    /**
+     * @psalm-suppress UnresolvableInclude
+     * @psalm-suppress RedundantPropertyInitializationCheck
+     */
     private function getConfigCache(): array
     {
         return $this->config ??= require $this->cache->getPath();

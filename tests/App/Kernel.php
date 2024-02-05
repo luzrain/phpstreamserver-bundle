@@ -50,10 +50,10 @@ final class Kernel extends BaseKernel
                 ],
             ]);
 
-//            $container->autowire(ResponseTestController::class)->setAutoconfigured(true);
-//            $container->autowire(RequestTestController::class)->setAutoconfigured(true);
-//            $container->autowire(TestTask::class)->setAutoconfigured(true);
-//            $container->autowire(TestProcess::class)->setAutoconfigured(true);
+            //            $container->autowire(ResponseTestController::class)->setAutoconfigured(true);
+            //            $container->autowire(RequestTestController::class)->setAutoconfigured(true);
+            //            $container->autowire(TestTask::class)->setAutoconfigured(true);
+            //            $container->autowire(TestProcess::class)->setAutoconfigured(true);
         });
     }
 

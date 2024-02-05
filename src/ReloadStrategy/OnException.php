@@ -13,15 +13,17 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 final class OnException implements ReloadStrategyInterface
 {
-    /** @var array<class-string<\Throwable>> */
     private array $allowedExceptions = [
         HttpException::class,
         HttpExceptionInterface::class,
-        \Symfony\Component\Serializer\Exception\ExceptionInterface::class,
+        '\Symfony\Component\Serializer\Exception\ExceptionInterface',
     ];
 
     private bool $scheduleReload = false;
 
+    /**
+     * @param list<class-string<\Throwable>> $allowedExceptions
+     */
     public function __construct(array $allowedExceptions = [])
     {
         \array_push($this->allowedExceptions, ...$allowedExceptions);
@@ -41,7 +43,7 @@ final class OnException implements ReloadStrategyInterface
 
     public function shouldReload(int $eventCode, mixed $eventObject = null): bool
     {
-        if ($eventCode === self::EVENT_CODE_EXCEPTION) {
+        if ($eventCode === self::EVENT_CODE_EXCEPTION && $eventObject instanceof \Throwable) {
             return $this->shouldExceptionTriggerReload($eventObject);
         }
 

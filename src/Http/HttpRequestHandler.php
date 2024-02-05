@@ -68,6 +68,7 @@ final readonly class HttpRequestHandler
 
         if ($this->kernel instanceof TerminableInterface) {
             $worker->getEventLoop()->defer(function () use ($symfonyRequest, $symfonyResponse): void {
+                /** @psalm-suppress UndefinedInterfaceMethod */
                 $this->kernel->terminate($symfonyRequest, $symfonyResponse);
             });
         }

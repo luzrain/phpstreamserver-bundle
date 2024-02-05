@@ -61,13 +61,18 @@ final class HttpServerWorker extends WorkerProcess
         /** @var EventDispatcherInterface $eventDispatcher */
         $eventDispatcher = $kernel->getContainer()->get('event_dispatcher');
 
+        /**
+         * @psalm-suppress UndefinedClass
+         * @psalm-suppress UndefinedInterfaceMethod
+         */
         if ($logger instanceof \Monolog\Logger) {
             $logger = $logger->withName('phprunner');
         }
 
         $errorHandler = ErrorHandler::register(null, false);
-        $errorHandlerClosure = static function (\Throwable $e) use ($errorHandler) {
+        $errorHandlerClosure = static function (\Throwable $e) use ($errorHandler): void {
             $errorHandler->setExceptionHandler(static function (\Throwable $e): void {});
+            /** @psalm-suppress InternalMethod */
             $errorHandler->handleException($e);
         };
 

@@ -23,8 +23,7 @@ class Runtime extends SymfonyRuntime
     {
         $resolver = parent::getResolver($callable, $reflector);
 
-        return new class ($resolver, $this->options) implements ResolverInterface
-        {
+        return new class ($resolver, $this->options) implements ResolverInterface {
             public function __construct(private ResolverInterface $resolver, private array $options)
             {
             }
@@ -33,7 +32,7 @@ class Runtime extends SymfonyRuntime
             {
                 [$app, $args] = $this->resolver->resolve();
 
-                return [static fn(...$args) => new KernelFactory(...$args), [$app, $args, $this->options]];
+                return [static fn(mixed ...$args) => new KernelFactory(...$args), [$app, $args, $this->options]];
             }
         };
     }

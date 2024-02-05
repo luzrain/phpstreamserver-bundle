@@ -17,8 +17,8 @@ final class TestProcess
 
     public function __invoke(): void
     {
-        file_put_contents($this->statusFile, time());
-        sleep(1);
+        \file_put_contents($this->statusFile, \time());
+        \sleep(1);
         exit;
     }
 }

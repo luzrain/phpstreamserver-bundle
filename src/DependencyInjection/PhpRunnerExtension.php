@@ -9,9 +9,10 @@ use Luzrain\PhpRunnerBundle\Event\HttpServerStartEvent;
 use Luzrain\PhpRunnerBundle\Http\HttpRequestHandler;
 use Luzrain\PhpRunnerBundle\ReloadStrategy\OnEachRequest;
 use Luzrain\PhpRunnerBundle\ReloadStrategy\OnException;
-use Luzrain\PhpRunnerBundle\ReloadStrategy\OnRequestsLimit;
 use Luzrain\PhpRunnerBundle\ReloadStrategy\OnMemoryLimit;
+use Luzrain\PhpRunnerBundle\ReloadStrategy\OnRequestsLimit;
 use Luzrain\PhpRunnerBundle\ReloadStrategy\OnTTLLimit;
+use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
@@ -22,6 +23,7 @@ final class PhpRunnerExtension extends Extension
 {
     public function load(array $configs, ContainerBuilder $container): void
     {
+        /** @var ConfigurationInterface $configuration */
         $configuration = $this->getConfiguration($configs, $container);
         $config = $this->processConfiguration($configuration, $configs);
 
@@ -114,28 +116,28 @@ final class PhpRunnerExtension extends Extension
             ;
         }
 
-//        $container->registerAttributeForAutoconfiguration(AsProcess::class, $this->processConfig(...));
-//        $container->registerAttributeForAutoconfiguration(AsTask::class, $this->taskConfig(...));
+        //        $container->registerAttributeForAutoconfiguration(AsProcess::class, $this->processConfig(...));
+        //        $container->registerAttributeForAutoconfiguration(AsTask::class, $this->taskConfig(...));
     }
 
-//    private function processConfig(ChildDefinition $definition, AsProcess $attribute): void
-//    {
-//        $definition->addTag('phprunner.process', [
-//            'name' => $attribute->name,
-//            'processes' => $attribute->processes,
-//            'method' => $attribute->method,
-//        ]);
-//    }
-//
-//    private function taskConfig(ChildDefinition $definition, AsTask $attribute): void
-//    {
-//        $definition->addTag('phprunner.task', [
-//            'name' => $attribute->name,
-//            'schedule' => $attribute->schedule,
-//            'method' => $attribute->method,
-//            'jitter' => $attribute->jitter,
-//        ]);
-//    }
+    //    private function processConfig(ChildDefinition $definition, AsProcess $attribute): void
+    //    {
+    //        $definition->addTag('phprunner.process', [
+    //            'name' => $attribute->name,
+    //            'processes' => $attribute->processes,
+    //            'method' => $attribute->method,
+    //        ]);
+    //    }
+    //
+    //    private function taskConfig(ChildDefinition $definition, AsTask $attribute): void
+    //    {
+    //        $definition->addTag('phprunner.task', [
+    //            'name' => $attribute->name,
+    //            'schedule' => $attribute->schedule,
+    //            'method' => $attribute->method,
+    //            'jitter' => $attribute->jitter,
+    //        ]);
+    //    }
 
     public function getAlias(): string
     {

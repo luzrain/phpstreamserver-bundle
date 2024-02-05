@@ -17,6 +17,6 @@ final class TestTask
 
     public function __invoke(): void
     {
-        file_put_contents($this->statusFile, time());
+        \file_put_contents($this->statusFile, \time());
     }
 }

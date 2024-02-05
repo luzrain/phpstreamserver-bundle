@@ -47,11 +47,11 @@ final class Psr17Factory implements ResponseFactoryInterface, ServerRequestFacto
      */
     public function createServerRequest(string $method, $uri, array $serverParams = []): ServerRequestInterface
     {
-        throw new \LogicException(sprintf('%s::createServerRequest() not implemented', self::class));
+        throw new \LogicException(\sprintf('%s::createServerRequest() not implemented', self::class));
     }
 
     public function createUploadedFile(StreamInterface $stream, int $size = null, int $error = \UPLOAD_ERR_OK, string $clientFilename = null, string $clientMediaType = null): UploadedFileInterface
     {
-        throw new \LogicException(sprintf('%s::createUploadedFile() not implemented', self::class));
+        throw new \LogicException(\sprintf('%s::createUploadedFile() not implemented', self::class));
     }
 }

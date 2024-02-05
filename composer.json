@@ -46,6 +46,13 @@
       "Luzrain\\PhpRunnerBundle\\Test\\": "tests/"
     }
   },
+  "scripts": {
+    "test": [
+      "vendor/bin/php-cs-fixer fix -v --dry-run",
+      "vendor/bin/psalm",
+      "vendor/bin/phpunit"
+    ]
+  },
   "config": {
     "sort-packages": true,
     "allow-plugins": {
