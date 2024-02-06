@@ -29,6 +29,7 @@ final class HttpServerWorker extends WorkerProcess
         int $count,
         string|null $user,
         string|null $group,
+        private readonly int $maxBodySize,
     ) {
         if (!\str_starts_with($listen, 'http://') && !\str_starts_with($listen, 'https://')) {
             throw new \InvalidArgumentException('HttpServerWorker only supports http:// and https:// listen');
@@ -81,7 +82,9 @@ final class HttpServerWorker extends WorkerProcess
 
         $this->startServer(new Server(
             listen: $this->listen,
-            protocol: new Http(),
+            protocol: new Http(
+                maxBodySize: $this->maxBodySize,
+            ),
             tls: $this->tls,
             tlsCertificate: $this->localCert ?? '',
             tlsCertificateKey: $this->localPk ?? '',
