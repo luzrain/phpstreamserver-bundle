@@ -23,14 +23,7 @@ final readonly class Runner implements RunnerInterface
             isDebug: $this->kernelFactory->isDebug(),
         );
 
-        // Warm up cache if no phprunner fresh config found (do it in a forked process as the main process should not boot kernel)
-        if (!$configLoader->isFresh()) {
-            $configLoader->warmUpInFork($this->kernelFactory);
-        }
-
-        $config = $configLoader->getConfig();
-        //$schedulerConfig = $configLoader->getSchedulerConfig();
-        //$processConfig = $configLoader->getProcessConfig();
+        $config = $configLoader->getConfig($this->kernelFactory);
 
         $phpRunner = new PhpRunner(
             pidFile: $config['pid_file'],
@@ -52,36 +45,5 @@ final readonly class Runner implements RunnerInterface
         }
 
         return $phpRunner->run();
-
-
-        if (!empty($schedulerConfig)) {
-            new SchedulerWorker(
-                kernelFactory: $this->kernelFactory,
-                user: $config['user'],
-                group: $config['group'],
-                schedulerConfig: $schedulerConfig,
-            );
-        }
-
-        if ($config['reload_strategy']['file_monitor']['active'] && $this->kernelFactory->isDebug()) {
-            new FileMonitorWorker(
-                user: $config['user'],
-                group: $config['group'],
-                sourceDir: $config['reload_strategy']['file_monitor']['source_dir'],
-                filePattern: $config['reload_strategy']['file_monitor']['file_pattern'],
-            );
-        }
-
-        if (!empty($processConfig)) {
-            new SupervisorWorker(
-                kernelFactory: $this->kernelFactory,
-                user: $config['user'],
-                group: $config['group'],
-                processConfig: $processConfig,
-            );
-        }
-
-
-        return 0;
     }
 }

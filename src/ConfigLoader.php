@@ -5,23 +5,17 @@ declare(strict_types=1);
 namespace Luzrain\PhpRunnerBundle;
 
 use Symfony\Component\Config\ConfigCache;
-use Symfony\Component\Config\Resource\FileResource;
+use Symfony\Component\Config\Resource\DirectoryResource;
 use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
 
-/**
- * @psalm-suppress PropertyNotSetInConstructor
- */
 final class ConfigLoader implements CacheWarmerInterface
 {
-    private array $config;
+    private array $config = [];
     private ConfigCache $cache;
-    private string $yamlConfigFilePath;
 
-    public function __construct(string $projectDir, string $cacheDir, bool $isDebug)
+    public function __construct(private string $projectDir, string $cacheDir, bool $isDebug)
     {
-        $this->yamlConfigFilePath = \sprintf('%s/config/packages/phprunner.yaml', $projectDir);
-        $cacheConfigFilePath = \sprintf('%s/phprunner_config.cache.php', $cacheDir);
-        $this->cache = new ConfigCache($cacheConfigFilePath, $isDebug);
+        $this->cache = new ConfigCache(\sprintf('%s/phprunner_config.cache.php', $cacheDir), $isDebug);
     }
 
     public function isOptional(): bool
@@ -31,64 +25,30 @@ final class ConfigLoader implements CacheWarmerInterface
 
     public function warmUp(string $cacheDir, string $buildDir = null): array
     {
-        $resources = \is_file($this->yamlConfigFilePath) ? [new FileResource($this->yamlConfigFilePath)] : [];
-        $this->cache->write(\sprintf('<?php return %s;', \var_export($this->config, true)), $resources);
+        $metadata = new DirectoryResource(\sprintf('%s/config/packages', $this->projectDir), '/phprunner/');
+        $this->cache->write(\sprintf('<?php return %s;', \var_export($this->config, true)), [$metadata]);
 
         return [];
     }
 
-    public function warmUpInFork(KernelFactory $kernelFactory): void
-    {
-        if (\pcntl_fork() === 0) {
-            $kernelFactory->createKernel()->boot();
-            exit;
-        } else {
-            \pcntl_wait($status);
-            unset($status);
-        }
-    }
-
-    public function isFresh(): bool
-    {
-        return $this->cache->isFresh();
-    }
-
-    /**
-     * @psalm-suppress UnresolvableInclude
-     * @psalm-suppress RedundantPropertyInitializationCheck
-     */
-    private function getConfigCache(): array
-    {
-        return $this->config ??= require $this->cache->getPath();
-    }
-
     public function setConfig(array $config): void
     {
-        $this->config[0] = $config;
+        $this->config = $config;
     }
 
-    public function setProcessConfig(array $config): void
+    public function getConfig(KernelFactory|null $kernelFactory = null): array
     {
-        $this->config[1] = $config;
-    }
+        // Warm up cache if no fresh config found (do it in a forked process as the main process should not boot kernel)
+        if ($this->cache->isFresh() === false && $kernelFactory !== null) {
+            if (\pcntl_fork() === 0) {
+                $kernelFactory->createKernel()->boot();
+                exit;
+            } else {
+                \pcntl_wait($status);
+                unset($status);
+            }
+        }
 
-    public function setSchedulerConfig(array $config): void
-    {
-        $this->config[2] = $config;
-    }
-
-    public function getConfig(): array
-    {
-        return $this->getConfigCache()[0];
-    }
-
-    public function getProcessConfig(): array
-    {
-        return $this->getConfigCache()[1];
-    }
-
-    public function getSchedulerConfig(): array
-    {
-        return $this->getConfigCache()[2];
+        return require $this->cache->getPath();
     }
 }

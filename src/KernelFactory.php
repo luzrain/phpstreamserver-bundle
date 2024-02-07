@@ -8,13 +8,10 @@ use Symfony\Component\HttpKernel\KernelInterface;
 
 final readonly class KernelFactory
 {
-    private string $projectDir;
     private string $environment;
     private bool $isDebug;
+    private string $projectDir;
 
-    /**
-     * @psalm-suppress InvalidPropertyAssignmentValue
-     */
     public function __construct(private \Closure $app, private array $args, array $options)
     {
         $this->projectDir = $options['project_dir'];
