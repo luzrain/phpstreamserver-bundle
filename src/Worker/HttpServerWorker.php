@@ -51,34 +51,13 @@ final class HttpServerWorker extends WorkerProcess
     {
         $kernel = $this->kernelFactory->createKernel();
         $kernel->boot();
-        $kernel->getContainer()->set('phprunner.worker', $this);
+        $kernel->getContainer()->get('phprunner.worker_configurator')->configure($this);
 
         /** @var \Closure $httpHandler */
         $httpHandler = $kernel->getContainer()->get('phprunner.http_request_handler');
 
-        /** @var LoggerInterface $logger */
-        $logger = $kernel->getContainer()->get('phprunner.logger');
-
         /** @var EventDispatcherInterface $eventDispatcher */
         $eventDispatcher = $kernel->getContainer()->get('event_dispatcher');
-
-        /**
-         * @psalm-suppress UndefinedClass
-         * @psalm-suppress UndefinedInterfaceMethod
-         */
-        if ($logger instanceof \Monolog\Logger) {
-            $logger = $logger->withName('phprunner');
-        }
-
-        $errorHandler = ErrorHandler::register(null, false);
-        $errorHandlerClosure = static function (\Throwable $e) use ($errorHandler): void {
-            $errorHandler->setExceptionHandler(static function (\Throwable $e): void {});
-            /** @psalm-suppress InternalMethod */
-            $errorHandler->handleException($e);
-        };
-
-        $this->setLogger($logger);
-        $this->setErrorHandler($errorHandlerClosure);
 
         $this->startServer(new Server(
             listen: $this->listen,

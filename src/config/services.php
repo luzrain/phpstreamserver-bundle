@@ -3,6 +3,7 @@
 use Luzrain\PhpRunnerBundle\ConfigLoader;
 use Luzrain\PhpRunnerBundle\Event\HttpServerStartEvent;
 use Luzrain\PhpRunnerBundle\Http\HttpRequestHandler;
+use Luzrain\PhpRunnerBundle\Internal\WorkerConfigurator;
 use Luzrain\PhpRunnerBundle\ReloadStrategy\OnEachRequest;
 use Luzrain\PhpRunnerBundle\ReloadStrategy\OnException;
 use Luzrain\PhpRunnerBundle\ReloadStrategy\OnMemoryLimit;
@@ -32,8 +33,10 @@ return static function (array $config, ContainerBuilder $container) {
     ;
 
     $container
-        ->setAlias('phprunner.logger', 'logger')
-        ->setPublic(true);
+        ->register('phprunner.worker_configurator', WorkerConfigurator::class)
+        ->setArguments([new Reference(KernelInterface::class), new Reference('logger')])
+        ->setPublic(true)
+    ;
 
     if ($config['reload_strategy']['on_exception']['active']) {
         $container
