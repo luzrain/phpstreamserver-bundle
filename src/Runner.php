@@ -7,6 +7,7 @@ namespace Luzrain\PhpRunnerBundle;
 use Luzrain\PhpRunner\PhpRunner;
 use Luzrain\PhpRunnerBundle\Internal\Functions;
 use Luzrain\PhpRunnerBundle\Worker\HttpServerWorker;
+use Luzrain\PhpRunnerBundle\Worker\SchedulerWorker;
 use Symfony\Component\Runtime\RunnerInterface;
 
 final readonly class Runner implements RunnerInterface
@@ -36,11 +37,20 @@ final readonly class Runner implements RunnerInterface
                 listen: $serverConfig['listen'],
                 localCert: $serverConfig['local_cert'],
                 localPk: $serverConfig['local_pk'],
-                name: $serverConfig['name'],
+                name: $serverConfig['name'] ?? 'Webserver',
                 count: $serverConfig['processes'] ?? Functions::cpuCount() * 2,
                 user: $config['user'],
                 group: $config['group'],
                 maxBodySize: $serverConfig['max_body_size'],
+            ));
+        }
+
+        if (!empty($config['tasks'])) {
+            $phpRunner->addWorkers(new SchedulerWorker(
+                kernelFactory: $this->kernelFactory,
+                user: $config['user'],
+                group: $config['group'],
+                tasks: $config['tasks'],
             ));
         }
 
