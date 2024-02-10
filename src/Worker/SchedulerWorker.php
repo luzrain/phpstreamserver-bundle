@@ -10,7 +10,7 @@ use Luzrain\PhpRunnerBundle\Scheduler\Trigger\TriggerFactory;
 use Luzrain\PhpRunnerBundle\Scheduler\Trigger\TriggerInterface;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\StringInput;
-use Symfony\Component\Console\Output\BufferedOutput;
+use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 final class SchedulerWorker extends WorkerProcess
@@ -56,7 +56,7 @@ final class SchedulerWorker extends WorkerProcess
 
         $this->getEventLoop()->onSignal(SIGCHLD, function () {
             while (($pid = \pcntl_wait($status, WNOHANG)) > 0) {
-               $this->onChildProcessExit($pid);
+                $this->onChildProcessExit($pid);
             }
         });
     }
@@ -100,11 +100,12 @@ final class SchedulerWorker extends WorkerProcess
             return;
         }
 
-        $application = new Application($this->kernel);
+        /** @var Application $application */
+        $application = $this->kernel->getContainer()->get('phprunner.application');
 
-        if ($application->has($command)) {
+        if ($application->has(\strstr($command, ' ', true) ?: $command)) {
             // If command is symfony console command execute it in a forked process
-            if (-1 === $pid = $this->executeSymfonyCommand($application, $command)) {
+            if (-1 === $pid = $this->runSymfonyCommand($application, $command)) {
                 $this->getLogger()->error(sprintf('Task "%s" call error!', $name));
             } else {
                 $this->getLogger()->info(sprintf('Task "%s" called', $name));
@@ -113,7 +114,7 @@ final class SchedulerWorker extends WorkerProcess
             }
         } else {
             $this->getLogger()->info(sprintf('Task "%s" called', $name));
-            $pid = $this->executeExternalCommand($command, function (string $error) use ($name) {
+            $pid = $this->runExternalCommand($command, function (string $error) use ($name) {
                 $this->getLogger()->error(sprintf('Task "%s" call error!', $name), ['error' => $error]);
             });
             $this->runningTaskMap[$pid] = $taskHash;
@@ -121,7 +122,7 @@ final class SchedulerWorker extends WorkerProcess
         }
     }
 
-    private function executeSymfonyCommand(Application $application, string $command): int
+    private function runSymfonyCommand(Application $application, string $command): int
     {
         if (0 !== $pid = \pcntl_fork()) {
             return $pid;
@@ -134,10 +135,9 @@ final class SchedulerWorker extends WorkerProcess
         \cli_set_process_title($command);
         \pcntl_signal(SIGINT, SIG_IGN);
 
-        $application->setAutoExit(false);
         $input = new StringInput($command);
         $input->setInteractive(false);
-        $output = new BufferedOutput();
+        $output = new NullOutput();
 
         exit($application->run($input, $output));
     }
@@ -145,10 +145,11 @@ final class SchedulerWorker extends WorkerProcess
     /**
      * @param null|\Closure(string): void $onStdErrorCallback
      */
-    private function executeExternalCommand(string $command, \Closure|null $onStdErrorCallback = null): int
+    private function runExternalCommand(string $command, \Closure|null $onStdErrorCallback = null): int
     {
         $cwd = $this->kernel->getProjectDir();
         $envVars = [...\getenv(), ...$_ENV];
+        unset($envVars['APP_RUNTIME']);
         $socketPair = \stream_socket_pair(STREAM_PF_UNIX, STREAM_SOCK_STREAM, STREAM_IPPROTO_IP);
         \stream_set_blocking($socketPair[1], false);
         $descriptorspec = [

@@ -7,6 +7,7 @@ namespace Luzrain\PhpRunnerBundle;
 use Luzrain\PhpRunner\PhpRunner;
 use Luzrain\PhpRunnerBundle\Internal\Functions;
 use Luzrain\PhpRunnerBundle\Worker\HttpServerWorker;
+use Luzrain\PhpRunnerBundle\Worker\ProcessWorker;
 use Luzrain\PhpRunnerBundle\Worker\SchedulerWorker;
 use Symfony\Component\Runtime\RunnerInterface;
 
@@ -51,6 +52,17 @@ final readonly class Runner implements RunnerInterface
                 user: $config['user'],
                 group: $config['group'],
                 tasks: $config['tasks'],
+            ));
+        }
+
+        foreach ($config['processes'] as $processConfig) {
+            $phpRunner->addWorkers(new ProcessWorker(
+                kernelFactory: $this->kernelFactory,
+                user: $config['user'],
+                group: $config['group'],
+                name: $processConfig['name'],
+                command: $processConfig['command'],
+                processes: $processConfig['processes'],
             ));
         }
 
