@@ -62,7 +62,7 @@ final readonly class Runner implements RunnerInterface
                 group: $config['group'],
                 name: $processConfig['name'],
                 command: $processConfig['command'],
-                processes: $processConfig['processes'],
+                count: $processConfig['count'],
             ));
         }
 

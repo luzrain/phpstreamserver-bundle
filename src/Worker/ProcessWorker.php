@@ -18,11 +18,11 @@ final class ProcessWorker extends WorkerProcess
         string|null $group,
         string|null $name,
         private readonly string $command,
-        int $processes,
+        int $count,
     ) {
         parent::__construct(
             name: $name ?? $command,
-            count: $processes,
+            count: $count,
             user: $user,
             group: $group,
             onStart: $this->onStart(...),

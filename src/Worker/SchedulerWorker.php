@@ -138,9 +138,7 @@ final class SchedulerWorker extends WorkerProcess
         }
 
         // Execute in a forked process
-        $identifiers = $this->getEventLoop()->getIdentifiers();
-        \array_walk($identifiers, $this->getEventLoop()->disable(...));
-        $this->getEventLoop()->stop();
+        $this->detach();
         \cli_set_process_title($command);
         \pcntl_signal(SIGINT, SIG_IGN);
 
