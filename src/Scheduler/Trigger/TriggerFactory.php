@@ -27,12 +27,14 @@ final class TriggerFactory
      */
     public static function create(string|int|\DateInterval|\DateTimeImmutable $expression, int $jitter = 0): TriggerInterface
     {
-        $expression = \DateTimeImmutable::createFromFormat(\DateTimeInterface::ATOM, $expression) ?: $expression;
+        if (\is_string($expression)) {
+            $expression = \DateTimeImmutable::createFromFormat(\DateTimeInterface::ATOM, $expression) ?: $expression;
+        }
 
         $trigger = match (true) {
             $expression instanceof \DateTimeImmutable => new DateTimeTrigger($expression),
-            count(explode(' ', $expression)) === 5 && str_contains($expression, '*'),
-            str_starts_with($expression, '@') => new CronExpressionTrigger($expression),
+            \is_string($expression) && \count(\explode(' ', $expression)) === 5 && \str_contains($expression, '*'),
+            \is_string($expression) && \str_starts_with($expression, '@') => new CronExpressionTrigger($expression),
             default => new PeriodicalTrigger($expression),
         };
 

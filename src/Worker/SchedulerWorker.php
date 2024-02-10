@@ -23,7 +23,7 @@ final class SchedulerWorker extends WorkerProcess
         private readonly KernelFactory $kernelFactory,
         string|null $user,
         string|null $group,
-        /** @var array{name: string, schedule: string, jitter: int, command: string} $tasks */
+        /** @var array{name: string|null, schedule: string, jitter: int, command: string} */
         private readonly array $tasks,
     ) {
         parent::__construct(
@@ -41,16 +41,24 @@ final class SchedulerWorker extends WorkerProcess
         $this->kernel->boot();
         $this->kernel->getContainer()->get('phprunner.worker_configurator')->configure($this);
 
+        /**
+         * @var string|null $name
+         * @var string $schedule
+         * @var int $jitter
+         * @var string $command
+         * @psalm-suppress InvalidArrayAccess
+         * @psalm-suppress InvalidArrayOffset
+         */
         foreach ($this->tasks as ['name' => $name, 'schedule' => $schedule, 'jitter' => $jitter, 'command' => $command]) {
             $name ??= $command;
             try {
                 $trigger = TriggerFactory::create($schedule, $jitter);
             } catch (\InvalidArgumentException) {
-                $this->getLogger()->warning(sprintf('Task "%s" skipped. Schedule "%s" is incorrect', $name, $schedule));
+                $this->getLogger()->warning(\sprintf('Task "%s" skipped. Schedule "%s" is incorrect', $name, $schedule));
                 continue;
             }
 
-            $this->getLogger()->info(sprintf('Task "%s" scheduled. Schedule: "%s"', $name, $trigger));
+            $this->getLogger()->info(\sprintf('Task "%s" scheduled. Schedule: "%s"', $name, $trigger));
             $this->scheduleCommand($trigger, $name, $command);
         }
 
@@ -88,14 +96,14 @@ final class SchedulerWorker extends WorkerProcess
         $nextRunDate = $trigger->getNextRunDate($currentDate);
         if ($nextRunDate !== null) {
             $interval = $nextRunDate->getTimestamp() - $currentDate->getTimestamp();
-            $this->getEventLoop()->delay($interval, fn () => $this->runCommand($trigger, $name, $command));
+            $this->getEventLoop()->delay($interval, fn() => $this->runCommand($trigger, $name, $command));
         }
     }
 
     private function runCommand(TriggerInterface $trigger, string $name, string $command): void
     {
         // Reschedule task without running it if previous task is still running
-        if (\in_array($taskHash = \hash('xxh64', $trigger . $name . $command), $this->runningTaskMap)) {
+        if (\in_array($taskHash = \hash('xxh64', $trigger . $name . $command), $this->runningTaskMap, true)) {
             $this->scheduleCommand($trigger, $name, $command);
             return;
         }
@@ -103,19 +111,20 @@ final class SchedulerWorker extends WorkerProcess
         /** @var Application $application */
         $application = $this->kernel->getContainer()->get('phprunner.application');
 
+        /** @psalm-suppress RiskyTruthyFalsyComparison */
         if ($application->has(\strstr($command, ' ', true) ?: $command)) {
             // If command is symfony console command execute it in a forked process
             if (-1 === $pid = $this->runSymfonyCommand($application, $command)) {
-                $this->getLogger()->error(sprintf('Task "%s" call error!', $name));
+                $this->getLogger()->error(\sprintf('Task "%s" call error!', $name));
             } else {
-                $this->getLogger()->info(sprintf('Task "%s" called', $name));
+                $this->getLogger()->info(\sprintf('Task "%s" called', $name));
                 $this->runningTaskMap[$pid] = $taskHash;
                 $this->scheduleCommand($trigger, $name, $command);
             }
         } else {
-            $this->getLogger()->info(sprintf('Task "%s" called', $name));
+            $this->getLogger()->info(\sprintf('Task "%s" called', $name));
             $pid = $this->runExternalCommand($command, function (string $error) use ($name) {
-                $this->getLogger()->error(sprintf('Task "%s" call error!', $name), ['error' => $error]);
+                $this->getLogger()->error(\sprintf('Task "%s" call error!', $name), ['error' => $error]);
             });
             $this->runningTaskMap[$pid] = $taskHash;
             $this->scheduleCommand($trigger, $name, $command);

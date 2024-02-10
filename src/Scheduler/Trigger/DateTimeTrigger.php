@@ -10,15 +10,15 @@ final class DateTimeTrigger implements TriggerInterface
 
     public function __construct(string|\DateTimeImmutable $date)
     {
-        if (is_string($date) && $iso8601Date = \DateTimeImmutable::createFromFormat(\DateTimeInterface::ATOM, $date)) {
+        if (\is_string($date) && $iso8601Date = \DateTimeImmutable::createFromFormat(\DateTimeInterface::ATOM, $date)) {
             $date = $iso8601Date;
         }
 
-        if (is_string($date)) {
+        if (\is_string($date)) {
             try {
                 $this->date = new \DateTimeImmutable($date);
             } catch (\Exception $e) {
-                throw new \InvalidArgumentException(sprintf('Invalid date string "%s": %s', $date, $e->getMessage()), 0, $e);
+                throw new \InvalidArgumentException(\sprintf('Invalid date string "%s": %s', $date, $e->getMessage()), 0, $e);
             }
         } else {
             $this->date = $date;

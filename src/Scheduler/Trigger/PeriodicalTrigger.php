@@ -12,22 +12,22 @@ final class PeriodicalTrigger implements TriggerInterface
     public function __construct(string|int|\DateInterval $interval)
     {
         try {
-            if (is_numeric($interval)) {
-                $this->interval = \DateInterval::createFromDateString(sprintf('%d seconds', $interval));
-                $this->description = sprintf('every %s seconds', $interval);
-            } elseif (\is_string($interval) && str_starts_with($interval, 'P')) {
+            if (\is_numeric($interval)) {
+                $this->interval = \DateInterval::createFromDateString(\sprintf('%d seconds', $interval));
+                $this->description = \sprintf('every %s seconds', $interval);
+            } elseif (\is_string($interval) && \str_starts_with($interval, 'P')) {
                 $this->interval = new \DateInterval($interval);
-                $this->description = sprintf('DateInterval (%s)', $interval);
+                $this->description = \sprintf('DateInterval (%s)', $interval);
             } elseif (\is_string($interval)) {
                 $this->interval = @\DateInterval::createFromDateString($interval);
-                $this->description = sprintf('every %s', $interval);
+                $this->description = \sprintf('every %s', $interval);
             } else {
                 $this->interval = $interval;
                 $a = (array) $interval;
-                $this->description = isset($a['from_string']) ? sprintf('every %s', $a['date_string']) : 'DateInterval';
+                $this->description = isset($a['from_string']) ? \sprintf('every %s', $a['date_string']) : 'DateInterval';
             }
         } catch (\Throwable $e) {
-            throw new \InvalidArgumentException(sprintf('Invalid interval "%s": %s', $interval instanceof \DateInterval ? 'instance of \DateInterval' : $interval, $e->getMessage()), 0, $e);
+            throw new \InvalidArgumentException(\sprintf('Invalid interval "%s": %s', $interval instanceof \DateInterval ? 'instance of \DateInterval' : $interval, $e->getMessage()), 0, $e);
         }
     }
 

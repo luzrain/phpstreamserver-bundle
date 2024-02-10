@@ -64,9 +64,6 @@ $rules = [
     // Empty body of class, interface, trait, enum or function must be abbreviated as {} and placed on the same line
     'single_line_empty_body' => false,
 
-    // Class DateTimeImmutable should be used instead of DateTime.
-    'date_time_immutable' => true,
-
     // Functions should be used with $strict param set to true.
     'strict_param' => true,
 

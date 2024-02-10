@@ -11,8 +11,6 @@ use Luzrain\PhpRunner\WorkerProcess;
 use Luzrain\PhpRunnerBundle\Event\HttpServerStartEvent;
 use Luzrain\PhpRunnerBundle\KernelFactory;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Log\LoggerInterface;
-use Symfony\Component\ErrorHandler\ErrorHandler;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 final class HttpServerWorker extends WorkerProcess

@@ -37,6 +37,7 @@ final class ProcessWorker extends WorkerProcess
         /** @var Application $application */
         $application = $kernel->getContainer()->get('phprunner.application');
 
+        /** @psalm-suppress RiskyTruthyFalsyComparison */
         if ($application->has(\strstr($this->command, ' ', true) ?: $this->command)) {
             $this->runSymfonyCommand($application, $this->command);
         } else {
