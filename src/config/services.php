@@ -15,7 +15,6 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
-use Symfony\Component\HttpKernel\KernelInterface;
 
 return static function (array $config, ContainerBuilder $container) {
     $container
@@ -31,20 +30,20 @@ return static function (array $config, ContainerBuilder $container) {
 
     $container
         ->register('phprunner.http_request_handler', HttpRequestHandler::class)
-        ->setArguments([new Reference(KernelInterface::class)])
+        ->setArguments([new Reference('kernel')])
         ->setPublic(true)
     ;
 
     $container
         ->register('phprunner.worker_configurator', WorkerConfigurator::class)
-        ->setArguments([new Reference(KernelInterface::class), new Reference('logger')])
+        ->setArguments([new Reference('kernel'), new Reference('logger')])
         ->setPublic(true)
     ;
 
     $container
         ->register('phprunner.application', Application::class)
         ->addMethodCall('setAutoExit', [false])
-        ->setArguments([new Reference(KernelInterface::class)])
+        ->setArguments([new Reference('kernel')])
         ->setShared(false)
         ->setPublic(true)
     ;
@@ -58,8 +57,8 @@ return static function (array $config, ContainerBuilder $container) {
             ])
             ->addTag('kernel.event_listener', [
                 'event' => ExceptionEvent::class,
-                'priority' => -100,
                 'method' => 'onException',
+                'priority' => -100,
             ])
             ->setArguments([
                 $config['reload_strategy']['on_exception']['allowed_exceptions'],

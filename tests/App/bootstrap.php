@@ -4,21 +4,20 @@ declare(strict_types=1);
 
 include __DIR__ . '/../../vendor/autoload.php';
 
-//\startServer();
-//\register_shutdown_function(stopServer(...));
+\startServer();
+\register_shutdown_function(stopServer(...));
 
 function startServer(): void
 {
-    $descriptorspec = [['pipe', 'r'], ['pipe', 'w']];
-    $process = \proc_open(\getServerStartCommandLine('start -d'), $descriptorspec, $pipes);
-    $return = \proc_close($process);
-    !$return ?: exit("Server start failed\n");
-    \usleep(500);
+    $process = \proc_open(\getServerStartCommandLine('start -d'), [], $pipes);
+    !\proc_close($process) ?: exit("Server start failed\n");
+    \usleep(10000);
 }
 
 function stopServer(): void
 {
-    \exec(\getServerStartCommandLine('stop'));
+    $process = \proc_open(\getServerStartCommandLine('stop'), [], $pipes);
+    \proc_close($process);
 }
 
 function getServerStartCommandLine(string $command): string

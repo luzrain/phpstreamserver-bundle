@@ -13,6 +13,10 @@ final class Functions
     {
     }
 
+    /**
+     * @psalm-suppress UndefinedFunction
+     * @psalm-suppress UndefinedConstant
+     */
     public static function cpuCount(): int
     {
         if (\PHP_VERSION_ID >= 80300) {

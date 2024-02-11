@@ -25,8 +25,9 @@ final class ConfigLoader implements CacheWarmerInterface
 
     public function warmUp(string $cacheDir, string $buildDir = null): array
     {
-        $metadata = new DirectoryResource(\sprintf('%s/config/packages', $this->projectDir), '/phprunner/');
-        $this->cache->write(\sprintf('<?php return %s;', \var_export($this->config, true)), [$metadata]);
+        $packagesDir = \sprintf('%s/config/packages', $this->projectDir);
+        $metadata = \is_dir($packagesDir) ? [new DirectoryResource($packagesDir, '/phprunner/')] : [];
+        $this->cache->write(\sprintf('<?php return %s;', \var_export($this->config, true)), $metadata);
 
         return [];
     }

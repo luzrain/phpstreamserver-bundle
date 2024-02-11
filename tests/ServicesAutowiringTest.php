@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Luzrain\PhpRunnerBundle\Test;
 
 use Luzrain\PhpRunnerBundle\Http\HttpRequestHandler;
+use Luzrain\PhpRunnerBundle\Internal\WorkerConfigurator;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Component\Console\Application;
 
 final class ServicesAutowiringTest extends KernelTestCase
 {
@@ -14,5 +16,7 @@ final class ServicesAutowiringTest extends KernelTestCase
         $container = self::getContainer();
 
         $this->assertInstanceOf(HttpRequestHandler::class, $container->get('phprunner.http_request_handler'));
+        $this->assertInstanceOf(WorkerConfigurator::class, $container->get('phprunner.worker_configurator'));
+        $this->assertInstanceOf(Application::class, $container->get('phprunner.application'));
     }
 }
