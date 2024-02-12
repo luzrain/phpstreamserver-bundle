@@ -6,6 +6,11 @@ include __DIR__ . '/../../vendor/autoload.php';
 
 \startServer();
 \register_shutdown_function(stopServer(...));
+\register_shutdown_function(static function () {
+    if (\is_dir($dir = \realpath(__DIR__ . '/../../var/cache/test'))) {
+        \exec("rm -rf $dir");
+    }
+});
 
 function startServer(): void
 {

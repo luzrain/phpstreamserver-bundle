@@ -48,9 +48,25 @@ final class Kernel extends BaseKernel
                         'processes' => 1,
                     ],
                 ],
+                'tasks' => [
+                    [
+                        'command' => 'app:test_task',
+                        'schedule' => '1 second',
+                    ],
+                ],
+                'processes' => [
+                    [
+                        'command' => 'app:test_process',
+                    ],
+                ],
             ]);
 
+            $container->setParameter('task_status_file', '%kernel.project_dir%/var/task_status.log');
+            $container->setParameter('process_status_file', '%kernel.project_dir%/var/process_status.log');
+
             $container->autowire(RequestTestController::class)->setAutoconfigured(true);
+            $container->autowire(TestTask::class)->setAutoconfigured(true);
+            $container->autowire(TestProcess::class)->setAutoconfigured(true);
         });
     }
 

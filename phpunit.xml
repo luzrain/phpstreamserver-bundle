@@ -18,5 +18,8 @@
     </source>
     <php>
         <env name="KERNEL_CLASS" value="Luzrain\PhpRunnerBundle\Test\App\Kernel" />
+        <env name="APP_RUNTIME" value="Luzrain\PhpRunnerBundle\Runtime" />
+        <env name="APP_ENV" value="test" />
+        <env name="SHELL_VERBOSITY" value="1" />
     </php>
 </phpunit>

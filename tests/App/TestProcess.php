@@ -4,21 +4,30 @@ declare(strict_types=1);
 
 namespace Luzrain\PhpRunnerBundle\Test\App;
 
+use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
-//#[AsProcess(name: 'Test process')]
-final class TestProcess
+#[AsCommand(
+    name: 'app:test_process',
+    description: 'test process',
+)]
+final class TestProcess extends Command
 {
     public function __construct(
-        #[Autowire(value: '%kernel.project_dir%/var/process_status.log')]
+        #[Autowire(param: 'process_status_file')]
         private string $statusFile,
     ) {
+        parent::__construct();
     }
 
-    public function __invoke(): void
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         \file_put_contents($this->statusFile, \time());
-        \sleep(1);
-        exit;
+        \sleep(300);
+
+        return Command::SUCCESS;
     }
 }
