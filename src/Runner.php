@@ -6,6 +6,7 @@ namespace Luzrain\PhpRunnerBundle;
 
 use Luzrain\PhpRunner\PhpRunner;
 use Luzrain\PhpRunnerBundle\Internal\Functions;
+use Luzrain\PhpRunnerBundle\Worker\FileMonitorWorker;
 use Luzrain\PhpRunnerBundle\Worker\HttpServerWorker;
 use Luzrain\PhpRunnerBundle\Worker\ProcessWorker;
 use Luzrain\PhpRunnerBundle\Worker\SchedulerWorker;
@@ -63,6 +64,17 @@ final readonly class Runner implements RunnerInterface
                 name: $processConfig['name'],
                 command: $processConfig['command'],
                 count: $processConfig['count'],
+            ));
+        }
+
+        if ($config['reload_strategy']['on_file_change']['active']) {
+            $phpRunner->addWorkers(new FileMonitorWorker(
+                sourceDir: $config['reload_strategy']['on_file_change']['source_dir'],
+                filePattern: $config['reload_strategy']['on_file_change']['file_pattern'],
+                pollingInterval: $config['reload_strategy']['on_file_change']['polling_interval'],
+                user: $config['user'],
+                group: $config['group'],
+                reloadCallback: $phpRunner->reload(...),
             ));
         }
 

@@ -202,6 +202,11 @@ return static function (DefinitionConfigurator $definition) {
                                     '*.yaml',
                                 ])
                                 ->end()
+                            ->floatNode('polling_interval')
+                                ->info('Interval in seconds between file system scans. Only affects in polling mode.')
+                                ->min(1.0)
+                                ->defaultValue(1.0)
+                                ->end()
                             ->end()
                         ->end()
                     ->end()

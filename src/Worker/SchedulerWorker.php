@@ -156,7 +156,6 @@ final class SchedulerWorker extends WorkerProcess
     {
         $cwd = $this->kernel->getProjectDir();
         $envVars = [...\getenv(), ...$_ENV];
-        unset($envVars['APP_RUNTIME']);
         $socketPair = \stream_socket_pair(STREAM_PF_UNIX, STREAM_SOCK_STREAM, STREAM_IPPROTO_IP);
         \stream_set_blocking($socketPair[1], false);
         $descriptorspec = [

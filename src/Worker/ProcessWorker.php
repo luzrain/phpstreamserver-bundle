@@ -60,7 +60,6 @@ final class ProcessWorker extends WorkerProcess
     {
         $this->detach();
         $envVars = [...\getenv(), ...$_ENV];
-        unset($envVars['APP_RUNTIME']);
         \str_ends_with($command, '.sh')
             ? \pcntl_exec($command, [], $envVars)
             : \pcntl_exec('/bin/sh', ['-c', $command], $envVars)
