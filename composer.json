@@ -12,10 +12,10 @@
     }
   ],
   "require": {
-    "php": "^8.2",
+    "php": ">=8.2",
     "ext-pcntl": "*",
     "ext-posix": "*",
-    "luzrain/phprunner": "dev-master",
+    "luzrain/phprunner": "^0.1",
     "psr/http-factory": "^1.0",
     "symfony/config": "^7.0",
     "symfony/dependency-injection": "^7.0",
@@ -32,7 +32,6 @@
     "vimeo/psalm": "^5.21"
   },
   "suggest": {
-    "ext-uv": "For better performance",
     "ext-inotify": "For effective file monitoring",
     "dragonmantank/cron-expression": "For parse cron expressions"
   },
