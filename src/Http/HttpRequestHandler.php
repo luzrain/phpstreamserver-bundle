@@ -64,7 +64,7 @@ final readonly class HttpRequestHandler
         $symfonyResponse = $this->kernel->handle($symfonyRequest);
 
         /** @var WorkerProcess $worker */
-        $worker = $this->kernel->getContainer()->get('phprunner.worker');
+        $worker = $this->kernel->getContainer()->get('phpstreamserver.worker');
 
         if ($this->kernel instanceof TerminableInterface) {
             $worker->getEventLoop()->defer(function () use ($symfonyRequest, $symfonyResponse): void {

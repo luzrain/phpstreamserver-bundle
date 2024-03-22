@@ -15,8 +15,8 @@ final class ServicesAutowiringTest extends KernelTestCase
     {
         $container = self::getContainer();
 
-        $this->assertInstanceOf(HttpRequestHandler::class, $container->get('phprunner.http_request_handler'));
-        $this->assertInstanceOf(WorkerConfigurator::class, $container->get('phprunner.worker_configurator'));
-        $this->assertInstanceOf(Application::class, $container->get('phprunner.application'));
+        $this->assertInstanceOf(HttpRequestHandler::class, $container->get('phpstreamserver.http_request_handler'));
+        $this->assertInstanceOf(WorkerConfigurator::class, $container->get('phpstreamserver.worker_configurator'));
+        $this->assertInstanceOf(Application::class, $container->get('phpstreamserver.application'));
     }
 }

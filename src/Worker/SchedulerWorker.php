@@ -39,7 +39,7 @@ final class SchedulerWorker extends WorkerProcess
     {
         $this->kernel = $this->kernelFactory->createKernel();
         $this->kernel->boot();
-        $this->kernel->getContainer()->get('phprunner.worker_configurator')->configure($this);
+        $this->kernel->getContainer()->get('phpstreamserver.worker_configurator')->configure($this);
 
         /**
          * @var string|null $name
@@ -109,7 +109,7 @@ final class SchedulerWorker extends WorkerProcess
         }
 
         /** @var Application $application */
-        $application = $this->kernel->getContainer()->get('phprunner.application');
+        $application = $this->kernel->getContainer()->get('phpstreamserver.application');
 
         /** @psalm-suppress RiskyTruthyFalsyComparison */
         if ($application->has(\strstr($command, ' ', true) ?: $command)) {

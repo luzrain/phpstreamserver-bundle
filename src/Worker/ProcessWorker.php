@@ -33,9 +33,9 @@ final class ProcessWorker extends WorkerProcess
     {
         $kernel = $this->kernelFactory->createKernel();
         $kernel->boot();
-        $kernel->getContainer()->get('phprunner.worker_configurator')->configure($this);
+        $kernel->getContainer()->get('phpstreamserver.worker_configurator')->configure($this);
         /** @var Application $application */
-        $application = $kernel->getContainer()->get('phprunner.application');
+        $application = $kernel->getContainer()->get('phpstreamserver.application');
 
         /** @psalm-suppress RiskyTruthyFalsyComparison */
         if ($application->has(\strstr($this->command, ' ', true) ?: $this->command)) {

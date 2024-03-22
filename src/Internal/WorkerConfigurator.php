@@ -35,6 +35,6 @@ final class WorkerConfigurator
         $worker->setLogger($this->logger);
         $worker->setErrorHandler($errorHandlerClosure);
 
-        $this->kernel->getContainer()->set('phprunner.worker', $worker);
+        $this->kernel->getContainer()->set('phpstreamserver.worker', $worker);
     }
 }

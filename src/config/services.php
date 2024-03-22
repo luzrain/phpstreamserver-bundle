@@ -18,7 +18,7 @@ use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 
 return static function (array $config, ContainerBuilder $container) {
     $container
-        ->register('phprunner.config_loader', ConfigLoader::class)
+        ->register('phpstreamserver.config_loader', ConfigLoader::class)
         ->addMethodCall('setConfig', [$config])
         ->addTag('kernel.cache_warmer')
         ->setArguments([
@@ -29,19 +29,19 @@ return static function (array $config, ContainerBuilder $container) {
     ;
 
     $container
-        ->register('phprunner.http_request_handler', HttpRequestHandler::class)
+        ->register('phpstreamserver.http_request_handler', HttpRequestHandler::class)
         ->setArguments([new Reference('kernel')])
         ->setPublic(true)
     ;
 
     $container
-        ->register('phprunner.worker_configurator', WorkerConfigurator::class)
+        ->register('phpstreamserver.worker_configurator', WorkerConfigurator::class)
         ->setArguments([new Reference('kernel'), new Reference('logger')])
         ->setPublic(true)
     ;
 
     $container
-        ->register('phprunner.application', Application::class)
+        ->register('phpstreamserver.application', Application::class)
         ->addMethodCall('setAutoExit', [false])
         ->setArguments([new Reference('kernel')])
         ->setShared(false)
@@ -50,7 +50,7 @@ return static function (array $config, ContainerBuilder $container) {
 
     if ($config['reload_strategy']['on_exception']['active']) {
         $container
-            ->register('phprunner.on_exception_reload_strategy', OnException::class)
+            ->register('phpstreamserver.on_exception_reload_strategy', OnException::class)
             ->addTag('kernel.event_listener', [
                 'event' => HttpServerStartEvent::class,
                 'method' => 'onServerStart',
@@ -68,7 +68,7 @@ return static function (array $config, ContainerBuilder $container) {
 
     if ($config['reload_strategy']['on_each_request']['active']) {
         $container
-            ->register('phprunner.on_each_request_reload_strategy', OnEachRequest::class)
+            ->register('phpstreamserver.on_each_request_reload_strategy', OnEachRequest::class)
             ->addTag('kernel.event_listener', [
                 'event' => HttpServerStartEvent::class,
                 'method' => 'onServerStart',
@@ -78,7 +78,7 @@ return static function (array $config, ContainerBuilder $container) {
 
     if ($config['reload_strategy']['on_ttl_limit']['active']) {
         $container
-            ->register('phprunner.on_ttl_limit_reload_strategy', OnTTLLimit::class)
+            ->register('phpstreamserver.on_ttl_limit_reload_strategy', OnTTLLimit::class)
             ->addTag('kernel.event_listener', [
                 'event' => HttpServerStartEvent::class,
                 'method' => 'onServerStart',
@@ -91,7 +91,7 @@ return static function (array $config, ContainerBuilder $container) {
 
     if ($config['reload_strategy']['on_requests_limit']['active']) {
         $container
-            ->register('phprunner.on_requests_limit_reload_strategy', OnRequestsLimit::class)
+            ->register('phpstreamserver.on_requests_limit_reload_strategy', OnRequestsLimit::class)
             ->addTag('kernel.event_listener', [
                 'event' => HttpServerStartEvent::class,
                 'method' => 'onServerStart',
@@ -105,7 +105,7 @@ return static function (array $config, ContainerBuilder $container) {
 
     if ($config['reload_strategy']['on_memory_limit']['active']) {
         $container
-            ->register('phprunner.on_on_memory_limit_reload_strategy', OnMemoryLimit::class)
+            ->register('phpstreamserver.on_on_memory_limit_reload_strategy', OnMemoryLimit::class)
             ->addTag('kernel.event_listener', [
                 'event' => HttpServerStartEvent::class,
                 'method' => 'onServerStart',

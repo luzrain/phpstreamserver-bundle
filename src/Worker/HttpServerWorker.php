@@ -49,10 +49,10 @@ final class HttpServerWorker extends WorkerProcess
     {
         $kernel = $this->kernelFactory->createKernel();
         $kernel->boot();
-        $kernel->getContainer()->get('phprunner.worker_configurator')->configure($this);
+        $kernel->getContainer()->get('phpstreamserver.worker_configurator')->configure($this);
 
         /** @var \Closure $httpHandler */
-        $httpHandler = $kernel->getContainer()->get('phprunner.http_request_handler');
+        $httpHandler = $kernel->getContainer()->get('phpstreamserver.http_request_handler');
 
         /** @var EventDispatcherInterface $eventDispatcher */
         $eventDispatcher = $kernel->getContainer()->get('event_dispatcher');
