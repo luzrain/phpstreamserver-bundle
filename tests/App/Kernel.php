@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Luzrain\PhpRunnerBundle\Test\App;
+namespace Luzrain\PHPStreamServerBundle\Test\App;
 
-use Luzrain\PhpRunnerBundle\PhpRunnerBundle;
+use Luzrain\PHPStreamServerBundle\PHPStreamServerBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\Config\Loader\LoaderInterface;
@@ -20,7 +20,7 @@ final class Kernel extends BaseKernel
     {
         return [
             new FrameworkBundle(),
-            new PhpRunnerBundle(),
+            new PHPStreamServerBundle(),
         ];
     }
 
@@ -40,7 +40,7 @@ final class Kernel extends BaseKernel
                 ->addTag('routing.route_loader')
             ;
 
-            $container->loadFromExtension('phprunner', [
+            $container->loadFromExtension('phpstreamserver', [
                 'servers' => [
                     [
                         'name' => 'Test server',

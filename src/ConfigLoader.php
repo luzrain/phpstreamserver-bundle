@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Luzrain\PhpRunnerBundle;
+namespace Luzrain\PHPStreamServerBundle;
 
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\Resource\DirectoryResource;
@@ -15,7 +15,7 @@ final class ConfigLoader implements CacheWarmerInterface
 
     public function __construct(private string $projectDir, string $cacheDir, bool $isDebug)
     {
-        $this->cache = new ConfigCache(\sprintf('%s/phprunner_config.cache.php', $cacheDir), $isDebug);
+        $this->cache = new ConfigCache(\sprintf('%s/phpss_config.cache.php', $cacheDir), $isDebug);
     }
 
     public function isOptional(): bool
@@ -26,7 +26,7 @@ final class ConfigLoader implements CacheWarmerInterface
     public function warmUp(string $cacheDir, string $buildDir = null): array
     {
         $packagesDir = \sprintf('%s/config/packages', $this->projectDir);
-        $metadata = \is_dir($packagesDir) ? [new DirectoryResource($packagesDir, '/phprunner/')] : [];
+        $metadata = \is_dir($packagesDir) ? [new DirectoryResource($packagesDir, '/phpstreamserver/')] : [];
         $this->cache->write(\sprintf('<?php return %s;', \var_export($this->config, true)), $metadata);
 
         return [];

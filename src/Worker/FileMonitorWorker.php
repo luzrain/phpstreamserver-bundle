@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Luzrain\PhpRunnerBundle\Worker;
+namespace Luzrain\PHPStreamServerBundle\Worker;
 
-use Luzrain\PhpRunner\WorkerProcess;
-use Luzrain\PhpRunnerBundle\FileMonitorWatcher\FileMonitorWatcher;
+use Luzrain\PHPStreamServer\WorkerProcess;
+use Luzrain\PHPStreamServerBundle\FileMonitorWatcher\FileMonitorWatcher;
 
 final class FileMonitorWorker extends WorkerProcess
 {

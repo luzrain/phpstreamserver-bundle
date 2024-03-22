@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Luzrain\PhpRunnerBundle\ReloadStrategy;
+namespace Luzrain\PHPStreamServerBundle\ReloadStrategy;
 
-use Luzrain\PhpRunner\Exception\HttpException;
-use Luzrain\PhpRunner\ReloadStrategy\ReloadStrategyInterface;
-use Luzrain\PhpRunnerBundle\Event\HttpServerStartEvent;
+use Luzrain\PHPStreamServer\Exception\HttpException;
+use Luzrain\PHPStreamServer\ReloadStrategy\ReloadStrategyInterface;
+use Luzrain\PHPStreamServerBundle\Event\HttpServerStartEvent;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\HttpKernelInterface;

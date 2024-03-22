@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Luzrain\PhpRunnerBundle\Worker;
+namespace Luzrain\PHPStreamServerBundle\Worker;
 
-use Luzrain\PhpRunner\WorkerProcess;
-use Luzrain\PhpRunnerBundle\KernelFactory;
-use Luzrain\PhpRunnerBundle\Scheduler\Trigger\TriggerFactory;
-use Luzrain\PhpRunnerBundle\Scheduler\Trigger\TriggerInterface;
+use Luzrain\PHPStreamServer\WorkerProcess;
+use Luzrain\PHPStreamServerBundle\KernelFactory;
+use Luzrain\PHPStreamServerBundle\Scheduler\Trigger\TriggerFactory;
+use Luzrain\PHPStreamServerBundle\Scheduler\Trigger\TriggerInterface;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\NullOutput;

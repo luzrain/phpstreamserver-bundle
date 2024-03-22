@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Luzrain\PhpRunnerBundle\ReloadStrategy;
+namespace Luzrain\PHPStreamServerBundle\ReloadStrategy;
 
-use Luzrain\PhpRunner\ReloadStrategy\MaxRequestsReloadStrategy;
-use Luzrain\PhpRunnerBundle\Event\HttpServerStartEvent;
+use Luzrain\PHPStreamServer\ReloadStrategy\MaxRequestsReloadStrategy;
+use Luzrain\PHPStreamServerBundle\Event\HttpServerStartEvent;
 
 final class OnRequestsLimit extends MaxRequestsReloadStrategy
 {

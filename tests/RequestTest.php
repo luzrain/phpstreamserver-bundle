@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Luzrain\PhpRunnerBundle\Test;
+namespace Luzrain\PHPStreamServerBundle\Test;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Cookie\CookieJar;

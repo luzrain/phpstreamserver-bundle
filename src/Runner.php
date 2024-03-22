@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Luzrain\PhpRunnerBundle;
+namespace Luzrain\PHPStreamServerBundle;
 
-use Luzrain\PhpRunner\PhpRunner;
-use Luzrain\PhpRunnerBundle\Internal\Functions;
-use Luzrain\PhpRunnerBundle\Worker\FileMonitorWorker;
-use Luzrain\PhpRunnerBundle\Worker\HttpServerWorker;
-use Luzrain\PhpRunnerBundle\Worker\ProcessWorker;
-use Luzrain\PhpRunnerBundle\Worker\SchedulerWorker;
+use Luzrain\PHPStreamServer\Server;
+use Luzrain\PHPStreamServerBundle\Internal\Functions;
+use Luzrain\PHPStreamServerBundle\Worker\FileMonitorWorker;
+use Luzrain\PHPStreamServerBundle\Worker\HttpServerWorker;
+use Luzrain\PHPStreamServerBundle\Worker\ProcessWorker;
+use Luzrain\PHPStreamServerBundle\Worker\SchedulerWorker;
 use Symfony\Component\Runtime\RunnerInterface;
 
 final readonly class Runner implements RunnerInterface
@@ -28,13 +28,13 @@ final readonly class Runner implements RunnerInterface
 
         $config = $configLoader->getConfig($this->kernelFactory);
 
-        $phpRunner = new PhpRunner(
+        $server = new Server(
             pidFile: $config['pid_file'],
             stopTimeout: $config['stop_timeout'],
         );
 
         foreach ($config['servers'] as $serverConfig) {
-            $phpRunner->addWorkers(new HttpServerWorker(
+            $server->addWorkers(new HttpServerWorker(
                 kernelFactory: $this->kernelFactory,
                 listen: $serverConfig['listen'],
                 localCert: $serverConfig['local_cert'],
@@ -48,7 +48,7 @@ final readonly class Runner implements RunnerInterface
         }
 
         if (!empty($config['tasks'])) {
-            $phpRunner->addWorkers(new SchedulerWorker(
+            $server->addWorkers(new SchedulerWorker(
                 kernelFactory: $this->kernelFactory,
                 user: $config['user'],
                 group: $config['group'],
@@ -57,7 +57,7 @@ final readonly class Runner implements RunnerInterface
         }
 
         foreach ($config['processes'] as $processConfig) {
-            $phpRunner->addWorkers(new ProcessWorker(
+            $server->addWorkers(new ProcessWorker(
                 kernelFactory: $this->kernelFactory,
                 user: $config['user'],
                 group: $config['group'],
@@ -68,16 +68,16 @@ final readonly class Runner implements RunnerInterface
         }
 
         if ($config['reload_strategy']['on_file_change']['active']) {
-            $phpRunner->addWorkers(new FileMonitorWorker(
+            $server->addWorkers(new FileMonitorWorker(
                 sourceDir: $config['reload_strategy']['on_file_change']['source_dir'],
                 filePattern: $config['reload_strategy']['on_file_change']['file_pattern'],
                 pollingInterval: $config['reload_strategy']['on_file_change']['polling_interval'],
                 user: $config['user'],
                 group: $config['group'],
-                reloadCallback: $phpRunner->reload(...),
+                reloadCallback: $server->reload(...),
             ));
         }
 
-        return $phpRunner->run();
+        return $server->run();
     }
 }

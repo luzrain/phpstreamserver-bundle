@@ -1,8 +1,8 @@
 {
-  "name": "luzrain/phprunner-bundle",
-  "description": "Phprunner runtime for symfony applications",
-  "keywords": ["phprunner", "symfony", "runtime", "php-runtime"],
-  "homepage": "https://github.com/luzrain/phprunner-bundle",
+  "name": "luzrain/phpstreamserver-bundle",
+  "description": "PHPStreamServer runtime for symfony applications",
+  "keywords": ["phpstreamserver", "symfony", "runtime", "php-runtime"],
+  "homepage": "https://github.com/luzrain/phpstreamserver-bundle",
   "type": "symfony-bundle",
   "license": "MIT",
   "authors": [
@@ -15,7 +15,7 @@
     "php": ">=8.2",
     "ext-pcntl": "*",
     "ext-posix": "*",
-    "luzrain/phprunner": "^0.1",
+    "luzrain/phpstreamserver": "^0.2.0",
     "psr/http-factory": "^1.0",
     "symfony/config": "^7.0",
     "symfony/dependency-injection": "^7.0",
@@ -37,12 +37,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Luzrain\\PhpRunnerBundle\\": "src/"
+      "Luzrain\\PHPStreamServerBundle\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Luzrain\\PhpRunnerBundle\\Test\\": "tests/"
+      "Luzrain\\PHPStreamServerBundle\\Test\\": "tests/"
     }
   },
   "scripts": {

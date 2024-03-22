@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Luzrain\PhpRunnerBundle\Http;
+namespace Luzrain\PHPStreamServerBundle\Http;
 
-use Luzrain\PhpRunner\WorkerProcess;
+use Luzrain\PHPStreamServer\WorkerProcess;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Luzrain\PhpRunnerBundle\Worker;
+namespace Luzrain\PHPStreamServerBundle\Worker;
 
-use Luzrain\PhpRunner\Server\Connection\ConnectionInterface;
-use Luzrain\PhpRunner\Server\Protocols\Http;
-use Luzrain\PhpRunner\Server\Server;
-use Luzrain\PhpRunner\WorkerProcess;
-use Luzrain\PhpRunnerBundle\Event\HttpServerStartEvent;
-use Luzrain\PhpRunnerBundle\KernelFactory;
+use Luzrain\PHPStreamServer\Listener;
+use Luzrain\PHPStreamServer\Server\Connection\ConnectionInterface;
+use Luzrain\PHPStreamServer\Server\Protocols\Http;
+use Luzrain\PHPStreamServer\WorkerProcess;
+use Luzrain\PHPStreamServerBundle\Event\HttpServerStartEvent;
+use Luzrain\PHPStreamServerBundle\KernelFactory;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
@@ -57,7 +57,7 @@ final class HttpServerWorker extends WorkerProcess
         /** @var EventDispatcherInterface $eventDispatcher */
         $eventDispatcher = $kernel->getContainer()->get('event_dispatcher');
 
-        $this->startServer(new Server(
+        $this->startListener(new Listener(
             listen: $this->listen,
             protocol: new Http(
                 maxBodySize: $this->maxBodySize,

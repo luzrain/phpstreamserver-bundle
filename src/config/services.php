@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-use Luzrain\PhpRunnerBundle\ConfigLoader;
-use Luzrain\PhpRunnerBundle\Event\HttpServerStartEvent;
-use Luzrain\PhpRunnerBundle\Http\HttpRequestHandler;
-use Luzrain\PhpRunnerBundle\Internal\WorkerConfigurator;
-use Luzrain\PhpRunnerBundle\ReloadStrategy\OnEachRequest;
-use Luzrain\PhpRunnerBundle\ReloadStrategy\OnException;
-use Luzrain\PhpRunnerBundle\ReloadStrategy\OnMemoryLimit;
-use Luzrain\PhpRunnerBundle\ReloadStrategy\OnRequestsLimit;
-use Luzrain\PhpRunnerBundle\ReloadStrategy\OnTTLLimit;
+use Luzrain\PHPStreamServerBundle\ConfigLoader;
+use Luzrain\PHPStreamServerBundle\Event\HttpServerStartEvent;
+use Luzrain\PHPStreamServerBundle\Http\HttpRequestHandler;
+use Luzrain\PHPStreamServerBundle\Internal\WorkerConfigurator;
+use Luzrain\PHPStreamServerBundle\ReloadStrategy\OnEachRequest;
+use Luzrain\PHPStreamServerBundle\ReloadStrategy\OnException;
+use Luzrain\PHPStreamServerBundle\ReloadStrategy\OnMemoryLimit;
+use Luzrain\PHPStreamServerBundle\ReloadStrategy\OnRequestsLimit;
+use Luzrain\PHPStreamServerBundle\ReloadStrategy\OnTTLLimit;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;

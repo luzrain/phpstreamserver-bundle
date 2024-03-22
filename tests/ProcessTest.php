@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Luzrain\PhpRunnerBundle\Test;
+namespace Luzrain\PHPStreamServerBundle\Test;
 
 use Revolt\EventLoop\Driver\StreamSelectDriver;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;

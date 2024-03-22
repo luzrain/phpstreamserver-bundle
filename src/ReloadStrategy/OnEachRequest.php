@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Luzrain\PhpRunnerBundle\ReloadStrategy;
+namespace Luzrain\PHPStreamServerBundle\ReloadStrategy;
 
-use Luzrain\PhpRunner\ReloadStrategy\EachRequestReloadStrategy;
-use Luzrain\PhpRunnerBundle\Event\HttpServerStartEvent;
+use Luzrain\PHPStreamServer\ReloadStrategy\EachRequestReloadStrategy;
+use Luzrain\PHPStreamServerBundle\Event\HttpServerStartEvent;
 
 final class OnEachRequest extends EachRequestReloadStrategy
 {

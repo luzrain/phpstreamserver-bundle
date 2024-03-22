@@ -24,7 +24,7 @@ return static function (DefinitionConfigurator $definition) {
             ->scalarNode('pid_file')
                 ->info('File to store master process PID')
                 ->cannotBeEmpty()
-                ->defaultValue('%kernel.project_dir%/var/run/phprunner.pid')
+                ->defaultValue('%kernel.project_dir%/var/run/phpss.pid')
                 ->end()
             ->arrayNode('servers')
                 ->prototype('array')

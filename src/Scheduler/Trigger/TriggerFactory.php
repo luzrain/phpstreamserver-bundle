@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Luzrain\PhpRunnerBundle\Scheduler\Trigger;
+namespace Luzrain\PHPStreamServerBundle\Scheduler\Trigger;
 
 final class TriggerFactory
 {

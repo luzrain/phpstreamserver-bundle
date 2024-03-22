@@ -1,15 +1,15 @@
-# PhpRunner runtime for symfony applications
+# PHPStreamServer runtime for symfony applications
 ![PHP >=8.2](https://img.shields.io/badge/PHP->=8.2-777bb3.svg?style=flat)
 ![Symfony ^7.0](https://img.shields.io/badge/Symfony-^7.0-374151.svg?style=flat)
-[![Version](https://img.shields.io/github/v/tag/luzrain/phprunner-bundle?label=Version&filter=v*.*.*&sort=semver&color=374151)](../../releases)
-[![Tests Status](https://img.shields.io/github/actions/workflow/status/luzrain/phprunner-bundle/tests.yaml?label=Tests&branch=master)](../../actions/workflows/tests.yaml)
+[![Version](https://img.shields.io/github/v/tag/luzrain/phpstreamserver-bundle?label=Version&filter=v*.*.*&sort=semver&color=374151)](../../releases)
+[![Tests Status](https://img.shields.io/github/actions/workflow/status/luzrain/phpstreamserver-bundle/tests.yaml?label=Tests&branch=master)](../../actions/workflows/tests.yaml)
 
-This bundle provides a [PhpRunner](https://github.com/luzrain/phprunner) integration with Symfony framework to run your application in a highly efficient event-loop based runtime.  
+This bundle provides a [PHPStreamServer](https://github.com/luzrain/phpstreamserver) integration with Symfony framework to run your application in a highly efficient event-loop based runtime.  
 
 ## Getting started
 ### Install composer packages
 ```bash
-$ composer require luzrain/phprunner-bundle
+$ composer require luzrain/phpstreamserver-bundle
 ```
 
 ### Enable the bundle
@@ -19,7 +19,7 @@ $ composer require luzrain/phprunner-bundle
 
 return [
     // ...
-    Luzrain\PhpRunnerBundle\PhpRunnerBundle::class => ['all' => true],
+    Luzrain\PHPStreamServerBundle\PHPStreamServerBundle::class => ['all' => true],
 ];
 ```
 
@@ -27,13 +27,13 @@ return [
 A minimal configuration might look like this.  
 For all available options with documentation, see the command output.
 ```bash
-$ bin/console config:dump-reference phprunner
+$ bin/console config:dump-reference phpstreamserver
 ```
 
 ```yaml
-# config/packages/phprunner.yaml
+# config/packages/phpstreamserver.yaml
 
-phprunner:
+phpstreamserver:
   servers:
     - name: 'Webserver'
       listen: http://0.0.0.0:80
@@ -42,7 +42,7 @@ phprunner:
 
 ### Start application
 ```bash
-$ APP_RUNTIME=Luzrain\\PhpRunnerBundle\\Runtime php public/index.php start
+$ APP_RUNTIME=Luzrain\\PHPStreamServerBundle\\Runtime php public/index.php start
 ```
 
 \* For better performance, install the _php-uv_ extension.
@@ -71,13 +71,13 @@ The bundle provides several restart strategies that can be configured depending 
 
 See all available options for each strategy in the command output.
 ```bash
-$ bin/console config:dump-reference phprunner reload_strategy
+$ bin/console config:dump-reference phpstreamserver reload_strategy
 ```
 
 ```yaml
-# config/packages/phprunner.yaml
+# config/packages/phpstreamserver.yaml
 
-phprunner:
+phpstreamserver:
   reload_strategy:
     on_exception:
       active: true
@@ -99,9 +99,9 @@ Schedule string can be formatted in several ways:
 ** Note that you need to install the [dragonmantank/cron-expression](https://github.com/dragonmantank/cron-expression) package if you want to use cron expressions as schedule strings
 
 ```yaml
-# config/packages/phprunner.yaml
+# config/packages/phpstreamserver.yaml
 
-phprunner:
+phpstreamserver:
   tasks:
     # Runs external program every 15 seconds
     - name: 'Task 1'
@@ -120,9 +120,9 @@ It can also work with both external commands and internal Symfony commands.
 To run a Symfony command, simply type the command name without any prefixes.  
 
 ```yaml
-# config/packages/phprunner.yaml
+# config/packages/phpstreamserver.yaml
 
-phprunner:
+phpstreamserver:
   processes:
     # Runs external program
     - name: 'External process'

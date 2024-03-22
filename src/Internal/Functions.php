@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Luzrain\PhpRunnerBundle\Internal;
+namespace Luzrain\PHPStreamServerBundle\Internal;
 
 /**
  * @internal

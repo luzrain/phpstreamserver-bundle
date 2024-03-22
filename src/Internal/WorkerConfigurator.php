@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Luzrain\PhpRunnerBundle\Internal;
+namespace Luzrain\PHPStreamServerBundle\Internal;
 
-use Luzrain\PhpRunner\WorkerProcess;
+use Luzrain\PHPStreamServer\WorkerProcess;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\ErrorHandler\ErrorHandler;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -22,7 +22,7 @@ final class WorkerConfigurator
          * @psalm-suppress UndefinedInterfaceMethod
          */
         if ($this->logger instanceof \Monolog\Logger) {
-            $this->logger = $this->logger->withName('phprunner');
+            $this->logger = $this->logger->withName('phpstreamserver');
         }
 
         $errorHandler = ErrorHandler::register(null, false);

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Luzrain\PhpRunnerBundle\Test;
+namespace Luzrain\PHPStreamServerBundle\Test;
 
-use Luzrain\PhpRunnerBundle\Http\HttpRequestHandler;
-use Luzrain\PhpRunnerBundle\Internal\WorkerConfigurator;
+use Luzrain\PHPStreamServerBundle\Http\HttpRequestHandler;
+use Luzrain\PHPStreamServerBundle\Internal\WorkerConfigurator;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Console\Application;
 

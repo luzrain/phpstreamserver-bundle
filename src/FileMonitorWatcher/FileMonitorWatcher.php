@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Luzrain\PhpRunnerBundle\FileMonitorWatcher;
+namespace Luzrain\PHPStreamServerBundle\FileMonitorWatcher;
 
 use Psr\Log\LoggerInterface;
 use Revolt\EventLoop\Driver;

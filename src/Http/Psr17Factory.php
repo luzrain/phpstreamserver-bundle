@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Luzrain\PhpRunnerBundle\Http;
+namespace Luzrain\PHPStreamServerBundle\Http;
 
-use Luzrain\PhpRunner\Server\Http\Psr7\ResourceStream;
-use Luzrain\PhpRunner\Server\Http\Psr7\Response;
-use Luzrain\PhpRunner\Server\Http\Psr7\StringStream;
+use Luzrain\PHPStreamServer\Server\Http\Psr7\ResourceStream;
+use Luzrain\PHPStreamServer\Server\Http\Psr7\Response;
+use Luzrain\PHPStreamServer\Server\Http\Psr7\StringStream;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestFactoryInterface;

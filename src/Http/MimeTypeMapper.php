@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Luzrain\PhpRunnerBundle\Http;
+namespace Luzrain\PHPStreamServerBundle\Http;
 
 final class MimeTypeMapper
 {
