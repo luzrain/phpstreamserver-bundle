@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Luzrain\PHPStreamServerBundle\ConfigLoader;
 use Luzrain\PHPStreamServerBundle\Event\HttpServerStartEvent;
+use Luzrain\PHPStreamServerBundle\Http\HeadersService;
 use Luzrain\PHPStreamServerBundle\Http\HttpRequestHandler;
 use Luzrain\PHPStreamServerBundle\Internal\WorkerConfigurator;
 use Luzrain\PHPStreamServerBundle\ReloadStrategy\OnEachRequest;
@@ -45,6 +46,12 @@ return static function (array $config, ContainerBuilder $container) {
         ->addMethodCall('setAutoExit', [false])
         ->setArguments([new Reference('kernel')])
         ->setShared(false)
+        ->setPublic(true)
+    ;
+
+    $container
+        ->register('phpstreamserver.headers_service', HeadersService::class)
+        ->addTag('kernel.reset', ['method' => 'reset'])
         ->setPublic(true)
     ;
 
