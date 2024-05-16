@@ -11,11 +11,8 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\HttpFoundationFactory;
 use Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory;
-use Symfony\Bridge\PsrHttpMessage\Factory\UploadedFile;
 use Symfony\Bridge\PsrHttpMessage\HttpFoundationFactoryInterface;
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\HttpKernel\TerminableInterface;
 
@@ -70,24 +67,13 @@ final readonly class HttpRequestHandler
         /** @var WorkerProcess $worker */
         $worker = $this->kernel->getContainer()->get('phpstreamserver.worker');
 
-        $worker->getEventLoop()->defer(fn() => $this->terminate($symfonyRequest, $symfonyResponse));
-
-        return $this->psrHttpFactory->createResponse($symfonyResponse);
-    }
-
-    private function terminate(Request $symfonyRequest, Response $symfonyResponse): void
-    {
-        if ($this->kernel instanceof TerminableInterface) {
-            $this->kernel->terminate($symfonyRequest, $symfonyResponse);
-        }
-
-        // Delete all uploaded files
-        $files = $symfonyRequest->files->all();
-        \array_walk_recursive($files, static function (UploadedFile $file) {
-            if (\file_exists($file->getRealPath())) {
-                \unlink($file->getRealPath());
+        $worker->getEventLoop()->defer(function () use ($symfonyRequest, $symfonyResponse): void {
+            if ($this->kernel instanceof TerminableInterface) {
+                $this->kernel->terminate($symfonyRequest, $symfonyResponse);
             }
         });
+
+        return $this->psrHttpFactory->createResponse($symfonyResponse);
     }
 
     private function findFileInPublicDirectory(string $requestPath): string|null

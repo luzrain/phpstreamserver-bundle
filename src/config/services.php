@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Luzrain\PHPStreamServerBundle\ConfigLoader;
 use Luzrain\PHPStreamServerBundle\Event\HttpServerStartEvent;
+use Luzrain\PHPStreamServerBundle\Http\DeleteUploadedFilesListener;
 use Luzrain\PHPStreamServerBundle\Http\HttpRequestHandler;
 use Luzrain\PHPStreamServerBundle\Internal\WorkerConfigurator;
 use Luzrain\PHPStreamServerBundle\ReloadStrategy\OnEachRequest;
@@ -15,6 +16,7 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
+use Symfony\Component\HttpKernel\Event\TerminateEvent;
 
 return static function (array $config, ContainerBuilder $container) {
     $container
@@ -46,6 +48,14 @@ return static function (array $config, ContainerBuilder $container) {
         ->setArguments([new Reference('kernel')])
         ->setShared(false)
         ->setPublic(true)
+    ;
+
+    $container
+        ->register('phpstreamserver.delete_uploaded_files_listener', DeleteUploadedFilesListener::class)
+        ->addTag('kernel.event_listener', [
+            'event' => TerminateEvent::class,
+            'priority' => -1024,
+        ])
     ;
 
     if ($config['reload_strategy']['on_exception']['active']) {

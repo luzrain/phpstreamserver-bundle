@@ -35,6 +35,7 @@ final class RequestTestController extends AbstractController
             'filename' => $file->getClientOriginalName(),
             'extension' => $file->getClientOriginalExtension(),
             'sha1' => \hash_file('sha1', $file->getRealPath()),
+            'realpath' => $file->getRealPath(),
             'size' => $file->getSize(),
         ];
     }

@@ -150,6 +150,8 @@ final class RequestTest extends KernelTestCase
             ]),
         ]);
 
+        \usleep(500000);
+
         // Assert request
         $this->assertCount(2, $response['post']);
         $this->assertSame('test-1-data', $response['post']['test-1']);
@@ -161,30 +163,35 @@ final class RequestTest extends KernelTestCase
         $this->assertSame('txt', $file['extension']);
         $this->assertSame(75, $file['size']);
         $this->assertSame('781eaba2e9a92ddf42748bd8f56a9990459ea413', $file['sha1']);
+        $this->assertFileDoesNotExist($file['realpath']);
 
         $file = $response['files']['file_one'][1];
         $this->assertSame('test2.txt', $file['filename']);
         $this->assertSame('txt', $file['extension']);
         $this->assertSame(47, $file['size']);
         $this->assertSame('f69850b7b6dddf24c14581956f5b6aa3ae9cd54e', $file['sha1']);
+        $this->assertFileDoesNotExist($file['realpath']);
 
         $file = $response['files']['file_three'];
         $this->assertSame('test3.txt', $file['filename']);
         $this->assertSame('txt', $file['extension']);
         $this->assertSame(27, $file['size']);
         $this->assertSame('4c129254b51981cba03e4c8aac82bb329880971a', $file['sha1']);
+        $this->assertFileDoesNotExist($file['realpath']);
 
         $file = $response['files']['image'];
         $this->assertSame('dot.png', $file['filename']);
         $this->assertSame('png', $file['extension']);
         $this->assertSame(70, $file['size']);
         $this->assertSame('4a5eb7171b58e08a6881721e3b43d5a44419a2be', $file['sha1']);
+        $this->assertFileDoesNotExist($file['realpath']);
 
         $file = $response['files']['big_file'];
         $this->assertSame('t.bin', $file['filename']);
         $this->assertSame('bin', $file['extension']);
         $this->assertSame(5000000, $file['size']);
         $this->assertSame('1310fa4a837135d0a5d13388a21e49474eea00ac', $file['sha1']);
+        $this->assertFileDoesNotExist($file['realpath']);
     }
 
     public function testRawRequest(): void
